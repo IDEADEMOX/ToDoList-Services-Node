@@ -3,8 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "ts-node-dev ./bin/www",
-    "build": "tsc"
+    "dev": "ts-node-dev ./bin/www",
+    "start": "npm run build && node dist/bin/www",
+    "build": "tsc && npm run copy-assets",
+    "copy-assets": "npm run copy-views && npm run copy-public",
+    "copy-views": "xcopy /E /I /Y views dist\\views",
+    "copy-public": "xcopy /E /I /Y public dist\\public"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
