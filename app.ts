@@ -1,9 +1,11 @@
+require('dotenv').config(); // 加载环境变量
 import { Request, Response, NextFunction } from "express";
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+const cors = require('cors');
 
 var indexRouter = require("./routes/index");
 var todosRouter = require("./routes/todos");
@@ -13,6 +15,9 @@ const connectDB = require("./db");
 var app = express();
 
 connectDB()
+
+// 允许跨域请求
+app.use(cors());
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -25,7 +30,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-app.use("/todos", todosRouter);
+app.use("/api/todos", todosRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req: Request, res: Response, next: NextFunction) {
