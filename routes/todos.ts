@@ -154,4 +154,39 @@ router.post("/delete", async (req: Request, res: Response, next: NextFunction) =
   }
 });
 
+// 更新状态
+router.post("/updateStatus", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const todo = await Todo.findById(req.body.id)
+    if (!todo) {
+      res.status(404).json({
+        success: false,
+        message: '待办不存在'
+      })
+      return
+    }
+    // 更新
+    todo.completed = req.body.completed
+    await todo.save()
+    res.status(200).json({
+      success: true,
+      data: todo
+    })
+  } catch (error) { 
+    if (error instanceof Error && error.name === 'CastError') {
+      res.status(400).json({
+        success: false,
+        message: '待办ID格式错误'
+      })
+      return
+    }
+    const errorMessage = error instanceof Error ? error.message : '未知错误';
+    res.status(500).json({
+      success: false,
+      message: '服务错误，删除失败',
+      error: errorMessage
+    })
+  }
+})
+
 module.exports = router;
